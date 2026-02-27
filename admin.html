@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Results</title>
+</head>
+<body>
+<h2>Quiz Results</h2>
+<div id="results"></div>
+
+<script>
+let results = JSON.parse(localStorage.getItem("quizResults")) || [];
+let output = "";
+
+results.forEach(r => {
+  output += `
+    <p>
+      👤 ${r.user} <br>
+      📘 ${r.subject} <br>
+      📝 Score: ${r.score}/${r.total} <br>
+      📅 ${r.date}
+    </p>
+    <hr>
+  `;
+});
+
+document.getElementById("results").innerHTML = output;
+</script>
+
+</body>
+</html>

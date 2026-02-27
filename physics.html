@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>မြန်မာ Quiz (50 Questions)</title>
+<style>
+body { font-family:"Noto Sans Myanmar",Arial,sans-serif; background:#f0f8ff; padding:20px; }
+h1 { text-align:center; }
+.question { background:#fff; padding:15px; margin:15px auto; max-width:650px;
+border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,.1); }
+.options label { display:block; background:#e6e6e6; padding:8px; margin-top:6px;
+border-radius:5px; cursor:pointer; }
+#finish { display:block; margin:20px auto; padding:10px 25px;
+background:#4CAF50; color:#fff; border:none; border-radius:5px; font-size:16px; }
+#finish:disabled { background:#999; cursor:not-allowed; }
+</style>
+</head>
+<body>
+
+<h1>မြန်မာ Quiz (50 Questions)</h1>
+
+<div id="quiz-container"></div>
+
+<button id="finish" disabled>Finish Quiz</button>
+<div id="scoreDisplay" style="text-align:center;font-size:20px;font-weight:bold;"></div>
+<div id="timer" style="text-align:center;font-size:22px;font-weight:bold;color:red;margin-bottom:15px;">
+60:00
+</div>
+
+<script>
+// Login check
+const loggedInUser =
+  localStorage.getItem("loggedInUser") ||
+  sessionStorage.getItem("loggedInUser");
+
+if(!loggedInUser){
+  window.location.href="index.html";
+}
+
+// ================= QUESTIONS =================
+let questions = [
+
+{ text:"A 1200 kg car moves around a circular curve of radius 60 m at 15 m/s. What provides the centripetal force?", options:["Engine power","Friction between tyres and road","Air resistance","Gravity only"], answer:"Friction between tyres and road"},
+
+{ text:"A car increases its speed while turning on the same curve. What must also increase to avoid skidding?", options:["Radius","Friction","Mass","Time"], answer:"Friction"},
+
+{ text:"Why are highways designed with banked curves?", options:["To reduce fuel use","To provide centripetal force component","To increase speed","To reduce gravity"], answer:"To provide centripetal force component"},
+
+{ text:"If a car moves twice as fast on the same curve, the required centripetal force becomes:", options:["Twice","Half","Four times","Same"], answer:"Four times"},
+
+{ text:"A motorbike leans inward while turning because:", options:["Gravity disappears","To balance torque and forces","Engine power increases","Friction decreases"], answer:"To balance torque and forces"},
+
+{ text:"A truck carrying a heavy load turns sharply. Why is it more likely to overturn?", options:["Larger mass increases torque effect","Less friction","No centripetal force","Air pressure"], answer:"Larger mass increases torque effect"},
+
+{ text:"When brakes fail on a curved road, the car tends to move:", options:["Toward the center","Tangentially outward","Upward","Downward"], answer:"Tangentially outward"},
+
+{ text:"If road friction is reduced by rain, safe turning speed should:", options:["Increase","Decrease","Remain same","Double"], answer:"Decrease"},
+
+{ text:"On a circular track, increasing radius (same speed) makes centripetal acceleration:", options:["Increase","Decrease","Zero","Constant"], answer:"Decrease"},
+
+{ text:"A racing car moving on a flat circular track depends mainly on ______ for turning.", options:["Engine","Friction","Air","Fuel"], answer:"Friction"},
+
+{ text:"Clothes press against the wall of a washing machine during spin because of:", options:["Gravity","Centripetal force","Inertia tendency outward","Magnetism"], answer:"Inertia tendency outward"},
+
+{ text:"The outer edge of a rotating ceiling fan has:", options:["Same linear speed as center","Greater linear speed","Zero speed","Smaller speed"], answer:"Greater linear speed"},
+
+{ text:"Opening a door at its edge is easier because torque is:", options:["Smaller","Larger","Zero","Constant"], answer:"Larger"},
+
+{ text:"A grinding wheel rotates faster. The risk of breaking increases because:", options:["Centripetal force increases","Gravity decreases","Friction disappears","Torque zero"], answer:"Centripetal force increases"},
+
+{ text:"A flywheel in an engine is used to:", options:["Stop motion","Store rotational energy","Increase friction","Reduce torque"], answer:"Store rotational energy"},
+
+{ text:"When a fan is switched off, it slows down due to:", options:["Centripetal force","Air resistance and friction","Gravity","Torque increase"], answer:"Air resistance and friction"},
+
+{ text:"A larger radius gear (same angular speed) has:", options:["Smaller linear speed","Larger linear speed","Same speed","Zero speed"], answer:"Larger linear speed"},
+
+{ text:"Increasing the mass of a rotating disc (same radius & speed) increases:", options:["Angular speed","Centripetal force","Time period","Frequency"], answer:"Centripetal force"},
+
+{ text:"If angular acceleration is zero, motion is:", options:["Linear","Uniform circular","Stopped","Random"], answer:"Uniform circular"},
+
+{ text:"The unit of torque is:", options:["N","Nm","kg","m/s"], answer:"Nm"},
+
+{ text:"A hammer throw athlete increases speed before release. Tension in string:", options:["Decreases","Increases","Same","Zero"], answer:"Increases"},
+
+{ text:"When released, the hammer moves:", options:["Toward center","Tangentially","Upward","Downward"], answer:"Tangentially"},
+
+{ text:"In a Ferris wheel, apparent weight at the top is:", options:["Greater","Smaller","Same","Zero"], answer:"Smaller"},
+
+{ text:"At the bottom of a vertical circle ride, seat force on passenger is:", options:["Minimum","Maximum","Zero","Constant"], answer:"Maximum"},
+
+{ text:"An ice skater pulls arms inward while spinning. Angular speed:", options:["Decreases","Increases","Same","Zero"], answer:"Increases"},
+
+{ text:"Conservation of angular momentum applies when:", options:["Net torque is zero","Net force is zero","Speed zero","Radius zero"], answer:"Net torque is zero"},
+
+{ text:"A cyclist turning a sharp corner must lean inward to:", options:["Reduce friction","Balance forces","Increase speed","Stop motion"], answer:"Balance forces"},
+
+{ text:"If rotational speed doubles, rotational kinetic energy becomes:", options:["Double","Half","Four times","Same"], answer:"Four times"},
+
+{ text:"In circular motion, velocity direction is:", options:["Toward center","Tangential","Outward","Zero"], answer:"Tangential"},
+
+{ text:"In uniform circular motion, acceleration is:", options:["Zero","Toward center","Tangential","Upward"], answer:"Toward center"},
+
+{ text:"Earth revolves around the Sun due to:", options:["Air","Magnetic force","Gravitational force","Friction"], answer:"Gravitational force"},
+
+{ text:"A satellite remains in orbit because gravitational force acts as:", options:["Tangential force","Centripetal force","Torque","Air resistance"], answer:"Centripetal force"},
+
+{ text:"If satellite speed decreases, it will:", options:["Move outward","Fall toward Earth","Stay same","Stop immediately"], answer:"Fall toward Earth"},
+
+{ text:"Earth completes one rotation in approximately:", options:["12 hours","24 hours","48 hours","1 hour"], answer:"24 hours"},
+
+{ text:"If radius of orbit increases (same speed), centripetal force:", options:["Increases","Decreases","Same","Zero"], answer:"Decreases"},
+
+{ text:"Angular velocity is measured in:", options:["m/s","rad/s","kg","N"], answer:"rad/s"},
+
+{ text:"Relationship between frequency and period is:", options:["f = T","f = 1/T","f = 2πT","f = rT"], answer:"f = 1/T"},
+
+{ text:"Pure rolling motion requires:", options:["v ≠ rω","v = rω","ω = 0","v = 0"], answer:"v = rω"},
+
+{ text:"Angular displacement is measured in:", options:["m","rad","N","s"], answer:"rad"},
+
+{ text:"In circular motion, net force direction is:", options:["Outward","Tangential","Toward center","Zero"], answer:"Toward center"},
+
+{ text:"Why does centripetal force do no work?", options:["Parallel to motion","Opposite direction","Perpendicular to velocity","Zero magnitude"], answer:"Perpendicular to velocity"},
+
+{ text:"If mass doubles (same speed & radius), centripetal force:", options:["Doubles","Half","Same","Zero"], answer:"Doubles"},
+
+{ text:"Moment of inertia depends on:", options:["Speed","Mass distribution","Time","Torque only"], answer:"Mass distribution"},
+
+{ text:"Increasing moment of inertia (same torque) makes angular acceleration:", options:["Increase","Decrease","Same","Zero"], answer:"Decrease"},
+
+{ text:"Rotational kinetic energy formula is:", options:["½mv²","½Iω²","Iω","rF"], answer:"½Iω²"},
+
+{ text:"Tangential acceleration equals:", options:["rω²","rα","v²/r","ω/r"], answer:"rα"},
+
+{ text:"Centripetal acceleration equals:", options:["v²/r","rα","rω","ω/r"], answer:"v²/r"},
+
+{ text:"If speed doubles, centripetal acceleration becomes:", options:["Double","Half","Four times","Same"], answer:"Four times"},
+
+{ text:"Without centripetal force, object in circular motion moves:", options:["Toward center","Tangentially","Upward","Downward"], answer:"Tangentially"},
+
+{ text:"Torque equals:", options:["rF","F/r","mr","ωF"], answer:"rF"}
+
+];
+// ===== TIMER =====
+let totalTime = 60 * 60; // 60 minutes
+const timerDisplay = document.getElementById("timer");
+
+const countdown = setInterval(()=>{
+    let minutes = Math.floor(totalTime/60);
+    let seconds = totalTime%60;
+    timerDisplay.textContent = 
+        `${minutes}:${seconds<10?"0":""}${seconds}`;
+    totalTime--;
+
+    if(totalTime < 0){
+        clearInterval(countdown);
+        alert("Time is up! Auto submitting...");
+        finish.click();
+    }
+},1000);
+// ================= QUIZ LOGIC =================
+const quizKey = `quizFinished_${loggedInUser}_Myanmar50`;
+let finished = localStorage.getItem(quizKey)==="true";
+const container=document.getElementById("quiz-container");
+const finish = document.getElementById("finish");
+const scoreDisplay = document.getElementById("scoreDisplay");
+
+questions.forEach((q,i)=>{
+  container.innerHTML+=`
+  <div class="question">
+    <p>Question ${i+1}: ${q.text}</p>
+    <div class="options">
+      ${q.options.map(opt=>`
+      <label>
+        <input type="radio" name="q${i}" value="${opt}" ${finished?"disabled":""}>
+        ${opt}
+      </label>`).join("")}
+    </div>
+  </div>`;
+});
+
+function checkAllAnswered(){
+  const ok=questions.every((q,i)=>
+    [...document.getElementsByName(`q${i}`)].some(r=>r.checked)
+  );
+  finish.disabled=!ok||finished;
+}
+
+questions.forEach((q,i)=>{
+  document.getElementsByName(`q${i}`).forEach(r=>{
+    r.addEventListener("change",checkAllAnswered);
+  });
+});
+
+finish.onclick=()=>{
+  let score=0, wrong=[];
+  questions.forEach((q,i)=>{
+    const sel=[...document.getElementsByName(`q${i}`)].find(r=>r.checked)?.value;
+    if(sel===q.answer) score++; else wrong.push(i+1);
+    document.getElementsByName(`q${i}`).forEach(r=>r.disabled=true);
+  });
+
+  localStorage.setItem(quizKey,"true");
+  finish.disabled=true;
+
+  scoreDisplay.innerHTML=
+    `Score: ${score}/${questions.length}`+
+    (wrong.length?`<br>မှားသော မေးခွန်းနံပါတ်: ${wrong.join(", ")}`:"");
+
+  // 🔥 ဒီနေရာမှာ ထည့်
+  saveResultToFirebase(score, questions.length);
+};
+</script>
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDfnsPZCNaNeWoUNQ8l-NuprFf3fuzMUqM",
+  authDomain: "quizapp-e82e1.firebaseapp.com",
+  projectId: "quizapp-e82e1",
+  storageBucket: "quizapp-e82e1.firebasestorage.app",
+  messagingSenderId: "906850004343",
+  appId: "1:906850004343:web:732a097728c0e43b110572"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.saveResultToFirebase = async function(score,total){
+  await addDoc(collection(db,"quizResults"),{
+    user: localStorage.getItem("loggedInUser") || sessionStorage.getItem("loggedInUser"),
+    subject:"Physics",
+    score:score,
+    total:total,
+    date:new Date()
+  });
+};
+</script>
+
+</body>
+</html>
